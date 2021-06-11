@@ -20,9 +20,4 @@ ind = pd.Index([2, 3, 5, 7, 11])
 
 # %% Operating and Data in Pandas
 
-# new line created in pycharm
-
-"""
-So I'm adding even more here.
-"""
 
