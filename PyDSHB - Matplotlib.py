@@ -30,3 +30,4 @@ ax2 = plt.axes()
 ax2.plot(x, np.cos(x))
 
 # this line is from pycharm
+# this line is also from pycharm
