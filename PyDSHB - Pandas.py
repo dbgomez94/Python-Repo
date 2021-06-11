@@ -19,5 +19,16 @@ df = pd.DataFrame({'Series 1': s1, 'Series 2': s2, 'Series 3': s3})
 ind = pd.Index([2, 3, 5, 7, 11])
 
 # %% Operating and Data in Pandas
+# Ufuncs: Index preservation
+ser = pd.Series(np.random.randint(0, 10, 4))
+df1 = pd.DataFrame(np.random.randint(0, 10, (3, 4)), columns=['c0', 'c1', 'c2', 'c3'], index=['r0', 'r1', 'r2'])
+# Ufuncs: Index alignment
+s3['E'] = np.random.randint(100)
+s4 = s1 / s3  # resulting array contains the union of the indices of s1 and s3
+s1.index.union(s3.index)
 
+df2 = df1 * 2
 
+df1['c0']['r0'] = np.nan
+
+df1.dropna(axis='columns')
