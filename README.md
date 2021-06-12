@@ -1,7 +1,7 @@
 # Python
 Just a collection of scripts and notes built as I teach myself Python.
 
-Full text can be found here:
+Python Data Science Handbook:
 https://jakevdp.github.io/PythonDataScienceHandbook/
 
 pdf version here:
