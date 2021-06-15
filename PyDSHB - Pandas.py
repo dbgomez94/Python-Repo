@@ -62,7 +62,7 @@ can be confused with other attributes, not recommended
 # dict-style item access can also be used to modify the df object (e.g., create new column)
 df['S4'] = df['S1'] + df['S2'] + df['S3']
 """
-majority of indexing will be in this column-wise fashion, but suppose you're interested in accessing row items?
+majority of indexing dfs will be in this column-wise fashion, but suppose you're interested in accessing row items?
 (what if row index is same as column index?)
 this is generally referred to as "array-style item access"
 use iloc, loc, and ix to index as an array
