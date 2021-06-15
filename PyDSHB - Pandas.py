@@ -6,7 +6,8 @@ data = pd.Series(np.linspace(0.25, 1, 4), index=list('ABCD')) # series
 data_values = data.values     # attribute, returns: ndarray
 data_index = data.index      # attribute, returns: RangeIndex
 # A dictionary
-pop_dict = {'CA': np.random.randint(1e6), 'TX': np.random.randint(1e6), 'NY': np.random.randint(1e6), 'IL': np.random.randint(1e6)}
+pop_dict = {'CA': np.random.randint(1e6), 'TX': np.random.randint(1e6), 'NY': np.random.randint(1e6),
+            'IL': np.random.randint(1e6)}
 # Series from dictionary
 pop = pd.Series(pop_dict)
 # Item access is similar for dictionaries and Series
@@ -46,7 +47,29 @@ data = list of dictionaries, dictionary of series objects, 2d np array, np struc
 """
 
 # % The Pandas Index Object
-ind = pd.Index([2, 3, 5, 7, 11])
+ind = pd.Index([2, 3, 5, 7, 11]) # index object is an immutable array / ordered set
+
+# %% Data Selection in DataFrames
+""" 
+recall a df is like a dictionary of series, all sharing the same index, with column names serving as the "keys".
+individual series are accessed via dictionary-style item access:
+"""
+df['S1']
+"""
+if col is nice string, can also use df.S1 (attribute style), doesn't work all the time, 
+can be confused with other attributes, not recommended
+"""
+# dict-style item access can also be used to modify the df object (e.g., create new column)
+df['S4'] = df['S1'] + df['S2'] + df['S3']
+"""
+majority of indexing will be in this column-wise fashion, but suppose you're interested in accessing row items?
+(what if row index is same as column index?)
+this is generally referred to as "array-style item access"
+use iloc, loc, and ix to index as an array
+"""
+
+
+
 
 # %% Operating and Data in Pandas
 # Ufuncs: Index preservation
