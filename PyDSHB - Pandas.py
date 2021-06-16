@@ -29,9 +29,9 @@ myseries = pd.Series(mydict)  # static type indices and values
 # %% The Pandas DataFrame Object
 " can be built from multiple series with the same index object "
 ind = ['R0', 'R1', 'R2', 'R3']
-s0 = pd.Series(np.random.randint(0, 100, 4), index=ind)
-s1 = pd.Series(np.random.randint(0, 100, 4), index=ind)
-s2 = pd.Series(np.random.randint(0, 100, 4), index=ind)
+s0 = pd.Series(np.random.randint(0, 10, 4), index=ind)
+s1 = pd.Series(np.random.randint(0, 10, 4), index=ind)
+s2 = pd.Series(np.random.randint(0, 10, 4), index=ind)
 # each series here shares the same index ind
 # we'll build a dict from these with unique keys, and turn the dict into a df. The keys will default to column names
 df = pd.DataFrame({'C0': s0, 'C1': s1, 'C2': s2})
@@ -58,7 +58,8 @@ if col is nice string, can also use df.C1 (attribute style), doesn't work all th
 can be confused with other attributes, not recommended
 """
 # dict-style item access can also be used to modify the df object (e.g., create new column)
-df['C3'] = df['C0'] + df['C1'] + df['C2']
+df['C3'] = df['C0'] + df['C1'] + df['C2']  # this is implicit indexing
+df.loc[:, 'C3'] = df.loc[:, 'C0'] + df.loc[:, 'C1'] + df.loc[:, 'C2']  # this is explicit (preferred)
 """
 majority of indexing dfs will be in this column-wise fashion, but suppose you're interested in accessing row items?
 (what if row index is same as column index?)
@@ -68,6 +69,7 @@ use iloc, loc, and ix to index as an array
 two kinds:
 1. implicit - uses implicit underlying indices (always 0 to n-1), but row and col names are preserved!
 2. explicit - uses the explicitly designated indices (can be strings, numbers, etc.)
+*** NOTE, first index is rows. "Rows before ..."
 """
 ri = 2
 ci = 3
@@ -89,5 +91,33 @@ WARNING on splicing: explicit splicing is INCLUSIVE (whereas implicit splicing i
 """
 
 # %% Operating and Data in Pandas
-# Ufuncs: Index preservation
-
+# unary operations (one operand) preserve index and column labels
+np.exp(s0)  # works on a Series
+np.sin(df)  # and on a DataFrame
+np.sqrt(df.loc['R0'])  # operand is a Series indexed from the DataFrame
+# binary operations (two operands) will automatically align indices,
+# if extra/missing indices, will return nan (can specify will arg: fill_value=##), returns sorted indices
+s0 + s1  # "+" is a "wrapper" for np.add
+np.add(s0, s1)  # numpy version
+s0.add(s1)  # pandas version
+s3 = np.add(s0, s1)
+s3['R4'] = 0
+s0 + s3  # returns NaN for R4 (does this work if numpy is not imported?)
+np.add(s0, s1)  # returns NaN for R4
+s0.add(s3, fill_value=0)  # returns 0 for R4
+# index and columns are aligned and preserved in DataFrames
+df + df
+np.add(df, df)
+df.add(df, fill_value=0)
+# operating between DataFrames and Series
+# first index is row, defaults to row-wise operation.
+df - df.loc['R0']
+df.subtract(df.loc['R0'])
+df.subtract(df.loc[:, 'C0'], axis=0)  # substracts C0 column from df moving in axis 0 direction
+# missing data
+df.loc['R3', 'C3'] = np.nan
+df.dropna()  # drops the row with nan (will prolly use this one most)
+df.dropna(axis=1)  # drops the col with nan
+np.any(df.isnull())
+df.loc['R3', 'C2'] = np.nan
+df.loc[:, 'C2'].fillna(0)  # can specify which column to fill nans
