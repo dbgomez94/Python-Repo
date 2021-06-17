@@ -121,3 +121,5 @@ df.dropna(axis=1)  # drops the col with nan
 np.any(df.isnull())
 df.loc['R3', 'C2'] = np.nan
 df.loc[:, 'C2'].fillna(0)  # can specify which column to fill nans
+
+# new line
