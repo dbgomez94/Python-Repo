@@ -12,7 +12,7 @@ pop_dict = {'CA': np.random.randint(1e6), 'TX': np.random.randint(1e6), 'NY': np
 pop = pd.Series(pop_dict)
 # Item access is similar for dictionaries and Series
 pop_dict['CA']
-pop['CA'] # etc
+pop['CA']# etc
 # Advantage of series is array-style indexing (e.g., splicing)
 # pop_dict['CA':'NY'] # returns error
 pop['CA':'NY'] # works
@@ -44,7 +44,7 @@ pd.DataFrame(data, columns=col)
 data = list of dictionaries, dictionary of series objects, 2d np array, np structured array
 """
 # % The Pandas Index Object
-ind = pd.Index([2, 3, 5, 7, 11]) # index object is an immutable array / ordered set
+pd.Index([2, 3, 5, 7, 11])  # index object is an immutable array / ordered set
 
 
 # %% Data Selection in DataFrames
@@ -114,7 +114,9 @@ df.add(df, fill_value=0)
 df - df.loc['R0']
 df.subtract(df.loc['R0'])
 df.subtract(df.loc[:, 'C0'], axis=0)  # substracts C0 column from df moving in axis 0 direction
-# missing data
+
+# %% missing data
+# other good functions: df.drop(), df.pop(), send a list if want multiple
 df.loc['R3', 'C3'] = np.nan
 df.dropna()  # drops the row with nan (will prolly use this one most)
 df.dropna(axis=1)  # drops the col with nan
@@ -122,4 +124,31 @@ np.any(df.isnull())
 df.loc['R3', 'C2'] = np.nan
 df.loc[:, 'C2'].fillna(0)  # can specify which column to fill nans
 
-# new line
+# %% Hierarchical Indexing
+# pd.MultiIndex(data, index=row_index, columns=col_index)
+# lets create some toy data and create a dataframe
+age = [41, 38, 24, 21]
+gen = ['M', 'M', 'F', 'F']
+Living = [True, True, False, True]
+
+# option 1: dictionary of lists -- prolly the simplest in this case
+midf = pd.DataFrame({'Age': age, 'Gen': gen, 'Alive': Living})
+
+# option 2: dictionary of series
+s_age = pd.Series(age, name='Age')
+s_gen = pd.Series(gen, name='Gen')
+s_living = pd.Series(Living, name='Living')
+midf = pd.DataFrame({'Age': s_age, 'Gen': s_gen, 'Living': s_living})
+
+# options 3: by zipping the list/series together
+midf = pd.DataFrame(zip(s_age, s_gen, s_living), columns=[s_age.name, s_gen.name, s_living.name])
+
+# lets multiindex on the rows, this is called stacking
+# we'll use the age and gen columns
+mi = pd.MultiIndex.from_frame(midf.loc[:, 'Gen':'Living'])  # just the last two columns
+midf = midf.drop(['Gen', 'Living'], axis=1)  # drop those columns, leaving only Age
+midf.index = mi
+
+
+
+
