@@ -129,25 +129,31 @@ df.loc[:, 'C2'].fillna(0)  # can specify which column to fill nans
 # lets create some toy data and create a dataframe
 age = [41, 38, 24, 21]
 gen = ['M', 'M', 'F', 'F']
-Living = [True, True, False, True]
+race = ['W', 'NW', 'W', 'NW']
 
 # option 1: dictionary of lists -- prolly the simplest in this case
-midf = pd.DataFrame({'Age': age, 'Gen': gen, 'Alive': Living})
+midf = pd.DataFrame({'Age': age, 'Gen': gen, 'Alive': race})
 
 # option 2: dictionary of series
 s_age = pd.Series(age, name='Age')
 s_gen = pd.Series(gen, name='Gen')
-s_living = pd.Series(Living, name='Living')
-midf = pd.DataFrame({'Age': s_age, 'Gen': s_gen, 'Living': s_living})
+s_race = pd.Series(race, name='Race')
+midf = pd.DataFrame({'Age': s_age, 'Gen': s_gen, 'Race': s_race})
 
 # options 3: by zipping the list/series together
-midf = pd.DataFrame(zip(s_age, s_gen, s_living), columns=[s_age.name, s_gen.name, s_living.name])
+midf = pd.DataFrame(zip(s_age, s_gen, s_race), columns=[s_age.name, s_gen.name, s_race.name])
 
-# lets multiindex on the rows, this is called stacking
+# lets multiindex on the rows, resulting df is referred to as a stacked df
 # we'll use the age and gen columns
-mi = pd.MultiIndex.from_frame(midf.loc[:, 'Gen':'Living'])  # just the last two columns
-midf = midf.drop(['Gen', 'Living'], axis=1)  # drop those columns, leaving only Age
-midf.index = mi
+midf.index = pd.MultiIndex.from_frame(midf.loc[:, 'Gen':'Race'])  # just the last two columns
+midf = midf.drop(['Gen', 'Race'], axis=1)  # drop those columns, leaving only Age
+# indexing a stacked multi-index dataframe:
+midf.loc['M', :]  # Dataframe
+midf.loc['M', :].loc['NW', :]  # Series
+midf.loc['M', :].loc['NW', :].loc['Age']  # int64
+midf.loc[:, 'NW', :]  # Dataframe
+# indexing an unstacked multi-index dataframe:
+midf_us = midf.unstack()
 
 
 
